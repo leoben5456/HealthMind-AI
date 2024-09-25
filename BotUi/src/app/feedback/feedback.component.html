@@ -1,0 +1,24 @@
+<div class="feedback-container">
+  <div class="feedback-header">
+    <h1>Feedback</h1>
+    <p>How can we improve?</p>
+    <p-rating class="custom-rate" (ngModel)="value" [cancel]="false" />
+  </div>
+
+  <div class="text-content">
+    <p-floatLabel>
+      <textarea
+          id="float-input"
+          rows="10"
+          cols="31"
+          pInputTextarea>
+      </textarea>
+      <label for="float-input">Comments</label>
+  </p-floatLabel>
+  </div>
+   <div class="feedback-footer">
+    <h1 (click)='cancel()' >Cancel</h1>
+    <p-button  label="Send!"/>
+   </div>
+
+</div>

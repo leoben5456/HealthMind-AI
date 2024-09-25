@@ -1,0 +1,53 @@
+from flask import Flask, request, jsonify
+from pyngrok import ngrok
+from flask_cors import CORS
+import re  # Import regex module to help with formatting
+
+app = Flask(__name__)
+CORS(app)
+
+def ask_question(question):
+    prompt = build_prompt(question)
+    outputs = pipe(prompt, max_new_tokens=1000, do_sample=True, temperature=0.6, top_p=0.9)
+    generated_text = outputs[0]["generated_text"].replace(prompt, "").strip()
+
+    if generated_text.startswith("Assistant:"):
+        generated_text = generated_text[len("Assistant:"):].strip()
+
+    # Format the text to improve readability
+    formatted_text = format_answer(generated_text)
+
+    return formatted_text
+
+def format_answer(answer):
+    # Ensure that numbers followed by a period are separated into a new line
+    # This handles cases like '1. Something' -> puts each number on its own line
+    answer = re.sub(r'(\d+)\.\s', r'\n\1. ', answer)  # Add newline before each number + period pattern
+
+    # Ensure new lines are preserved and unnecessary spaces are removed
+    answer = re.sub(r'\s*\n\s*', '\n', answer)  # Remove extra spaces before and after newlines
+    answer = re.sub(r'\n+', '\n', answer)  # Ensure no multiple newlines (collapse multiple newlines into one)
+
+    # Optional: reduce multiple spaces to single spaces between sentences or words
+    answer = re.sub(r'\s{2,}', ' ', answer)  # Replace two or more spaces with one
+    
+    # Trim leading and trailing spaces/newlines
+    return answer.strip()
+
+@app.route('/ask', methods=['POST'])
+def ask():
+    data = request.json
+    question = data.get("question", "")
+    if question:
+        answer = ask_question(question)
+        return jsonify({"answer": answer})  # Return the answer as JSON
+    else:
+        return jsonify({"error": "No question provided"}), 400
+
+if __name__ == '__main__':
+    ngrok.set_auth_token("2kYTMJFknmjidia3sHOHumzFgL8_2QXTLqwt3bKRoZ6VvxCVq")
+
+    public_url = ngrok.connect(8000)
+    print(f"Your app is available at: {public_url}")
+
+    app.run(host='0.0.0.0', port=8000)

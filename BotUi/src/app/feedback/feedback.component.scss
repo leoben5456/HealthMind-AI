@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+
+.feedback-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top:20px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.feedback-container .feedback-header{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.feedback-container .feedback-header h1{
+  font-size: 45px;
+}
+
+.feedback-container .feedback-header p{
+  font-size: 18px;
+  padding-left:5px;
+}
+
+
+
+
+:host ::ng-deep .custom-rate .p-rating-icon {
+  font-size: 50px !important;
+  color: rgb(228, 179, 55);
+}
+
+.feedback-container .text-content{
+  padding-top:30px;
+}
+
+.feedback-container .feedback-footer{
+  padding-top: 15px;
+  padding-left: 15px;
+  display: flex;
+  flex-direction: row;
+
+}
+
+.feedback-container .feedback-footer p-button{
+  padding-left: 25px;
+
+}
+
+.feedback-container .feedback-footer h1{
+  padding-top: 5px;
+  cursor: pointer ;
+}
+
+:host ::ng-deep .feedback-container .feedback-footer .p-button .p-button {
+  background-color: #050505 !important;
+  border-color: #000000 !important;
+}

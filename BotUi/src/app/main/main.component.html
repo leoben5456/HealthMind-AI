@@ -1,0 +1,191 @@
+<div class="container">
+
+    <div class="header">
+      <mat-icon [ngStyle]="{'display': isHandset ? 'block' : 'none'}"  (click)="sidebarVisible = true">menu</mat-icon>
+      <div><h3>HealthMind AI</h3></div>
+      <div (click)="openShareDialog()"> <img pTooltip="Share Conversation" tooltipPosition="bottom" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAiUlEQVR4nO2UOwqAMBBEXyGWgqU3yqGtTGHjKWLvFSLKCiJBYxLB38A0u2QeLJuFL6kAanFxRXgLWHEHlKnC80344qmWpQBUwOAADNJLKiuOkgJ6CdIeAC01I28PZVZBzQnAAokagw3s/YBZ/4heskXa8fmSAvZ0H4BxnGbraa9bpAIhxveaPksjXfV/QuOfNTQAAAAASUVORK5CYII="></div>
+    </div>
+
+
+    <div *ngIf="!hideSidebar" class="input-question">
+      <input #inputElement [(ngModel)]="recognizedText"     (input)="updateImageSource($any($event.target).value)"><img (click)="onCreateChat(inputElement.value, uuid)"[ngStyle]="{'cursor': isInputEmpty ? 'default' : 'pointer'}" [src]="inputImg">
+      <img (click)="startSpeechRecognition()" class="mic" width="22" height="22" src="https://img.icons8.com/material-outlined/22/microphone.png" alt="microphone"/>
+    </div>
+
+
+    <!-- Chat Messages or Welcome Message -->
+  <ng-container *ngIf="!uuid; else chatContent">
+    <div class="welcome-container">
+      <h1>Welcome to <span class="highlight">HealthMind AI</span></h1>
+      <p class="subtitle">
+        Your intelligent health assistant, designed to provide accurate answers to your medical questions. Navigate through your chat history or start a new conversation using the options above.
+      </p>
+      <p class="subtitle">
+        Get started by selecting or creating a chat!
+      </p>
+
+    </div>
+  </ng-container>
+
+  <ng-template #chatContent>
+    <div class="chat-messages">
+      <div *ngFor="let message of ChatMessages"
+           [ngClass]="{'message': true, 'bot': message.isBot, 'user': !message.isBot}">
+
+        <!-- Bot messages -->
+        <ng-container *ngIf="message.isBot">
+          <div class="bot-message">
+            <img src="https://images.squarespace-cdn.com/content/v1/651acb4c077bed428243c484/2e341682-980b-40d0-99fb-8465df2cbc7f/RGB_Emblem+Color+Dark.png" alt="Bot" class="bot-icon">
+            <p>{{ message.messageContent }}</p>
+          </div>
+        </ng-container>
+
+        <!-- User messages -->
+        <ng-container *ngIf="!message.isBot">
+          <div class="user-message">
+            <p>{{ message.messageContent }}</p>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Bot typing indicator -->
+      <div *ngIf="isWaitingForResponse" class="message bot typing-indicator">
+        <div class="bot-message">
+          <img src="https://images.squarespace-cdn.com/content/v1/651acb4c077bed428243c484/2e341682-980b-40d0-99fb-8465df2cbc7f/RGB_Emblem+Color+Dark.png" alt="Bot" class="bot-icon animated-icon">
+          <p>Thinking... this might take a moment...</p>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+
+
+
+
+
+
+    <!-- side nav history Section -->
+    <div *ngIf="!hideSidebar"  class="side-history" [ngClass]="{'side-history-open': sidebar, 'side-history-close': !sidebar}" [ngStyle]="{'display': isHandset ? 'none' : 'block'}">
+      <!-- Start New Converstion Or Close side Nav Section -->
+      <div class="side-history-header" >
+        <div (click)="closeSidebar()"><img  pTooltip="Close sidebar" tooltipPosition="bottom"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC2klEQVR4nJXVa0+SYRgHcFZ9lNZq2szS0g4ySxceYDjGQQM8QgqoKCogIsj5KGdR84QioOYnqEQ5uF7Xslr2vtWH+Lf7KYzkDVzb/8314rfnvq9710Oj0Wg0g8FwjSfsr+EI+x4Wwu4WNZJ0crsvwujiNZC0sjgPCnnawb7f/JxZxeVyrxKLcFe6B16+n5w1YkpvwqTOCKVmHqMzOshVWgwrZyAdm8agQoV+mRLi4TEIJQoIBkbA65WCIxoCUyDGEwYzQywaRzxURZDoRhyvYik4/BGsxpKwe8OIrscRXNmCb2kd7uAqbItLMLtCMNh90Fk8UBsdUM1ZMKY2oZ0rxONnbTdoXS/67qoNFqxtp7C+sw//8iZWthLwhFYQWo0hEN2EN7wGh38ZVm8EJmcAeosXmgUXpvQ2KLUmKKbmKbChpe02BQqlckiV05CMT2FAoUKfbII6mkiiQM+QjDoelxxPLAFL0AsmXwwmT0QhDE4PWth8NLWz/4GLkWWUW7HkHo5zpyX9OYu9CAxXACYImC/p68xFoDccLRvcImA2j7fHGcT3DxHfe42v59+hM9uKwFAF4G4K6WweH88+4yiTw1Emix8/f2HWZEMdvbWaAj2hpYrByzVrsv4BWQJRrSdYPri5m0Q6m4MvsowBhRL9snFk8qfQLhSB7mCkfDCeRDqTK+lrFyxFYKB8cCOepO7uTfoEO6kDbKf28eXbOTTGItAVCFcAJijww6czvDvJUtMmQ9EYzUWgvwJwh4DZkr7aYEbNo+YqCnT6Q2WD6wQ8yYK8jN6RUSQODv8H27k9dxy+ysHSLzT9BfmiW/M2V/ng9i51d5dLrtKgtoF+nVqwLL7wVG91wub1w+rxweJehNnlxYLTA6PDDYPdhXmbE3qrA4OjE5Cr1NRDJk+FDEMxrUU9vfWIWrCkyPru6OJVX17xZL0X0sTorCdpfMa4SD29pY7kXiP9ZuEX8Bvs83dW/5c87AAAAABJRU5ErkJggg=="></div>
+        <div (click)="navigateToHome()" ><img pTooltip="New Conversation" tooltipPosition="bottom"    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAACXBIWXMAAAsTAAALEwEAmpwYAAABaElEQVR4nN2UOUsDYRCGn0SIggmaw04JbFYRxANsPCCCliJYWHgUXmAUFCvFQlBECyXRv2Xhj5KRd2H53FOtfGEIO5n32dnZnQ/+gyqABxR1PQJMJIQvT6JWgB7wBkwqd6PrpDBPO6nTHrAOVEP5AaCeEA15zFuOArd0dyvOq7q8xvgmX3/WfgCuyeungZvAfsZo5gF7QAc4S4mOajOD8yozuAqsAmtOzP8WPAc8Ak9OXAElYMjxDsvrpYHjVADuVHcLbAGDyk8BfWngEjAeWltP5oI6PwY2gQfgWvBY+SHwcsTajqnuSF8E2jrrfCYruKjfYG1thoEWtL72HgLZxp3Gdd7KuNI2jh3BZ5WzJu6BZz1F7CHUiDhsyg58F+gC08rZzN+BF6DfhbdDx6YbXcdg49pT/kA123q5G1GPWtG83QN9NKLW4OfAh9bbdAicpIwzk+zbvVTnF8ArsPgXYJPNfElz/1r7T7bzRa7bv0R4AAAAAElFTkSuQmCC"></div>
+      </div>
+      <!-- Start New Converstion Or Close side Nav Section -->
+
+      <!-- Section of  Chat history start -->
+      <div class="chat-history">
+        <div  class="chat-container" *ngFor="let chat of chatHistory">
+          <!-- Display chat name when not editing -->
+          <span [routerLink]="['/chat', chat.UUID]" *ngIf="!chat.isEditing" class="chat">
+            {{ chat.name }}
+          </span>
+          <!-- Input field for editing chat name -->
+          <input *ngIf="chat.isEditing" [value]="chat.name" [(ngModel)]="chat.newName"
+                 (blur)="finishEditing(chat, chat.newName)"
+                 (keyup.enter)="finishEditing(chat, chat.newName)"
+                 type="text" class="edit-input" />
+
+          <!-- Options Symbol (three dots) -->
+          <span (click)="setChatuuid(chat.UUID)" [matMenuTriggerFor]="menu"
+                pTooltip="Options" tooltipPosition="bottom"
+                class="chat-options">&#8230;</span>
+
+          <!-- Options Menu -->
+          <mat-menu #menu="matMenu">
+            <button (click)="openShareDialog()" mat-menu-item>Share</button>
+            <button mat-menu-item (click)="startEditing(chat)">Rename</button>
+            <button mat-menu-item (click)="deleteConversation($event, chat.UUID)">Delete</button>
+          </mat-menu>
+        </div>
+      </div>
+
+
+
+
+
+      <!-- Section of  Chat history End -->
+
+      <mat-divider style="margin: 0 10px;" ></mat-divider>
+
+      <!-- Section of  Options start -->
+      <div class="options">
+        <div>
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA2klEQVR4nO1UOwrCQBBNk8obWOgBxMC8N+mEBOIxrCw8jIV4A0/gGWz0GGLrIUKUgRX8bJKNgo0OPBiY997MDrsbRd8OkmOSW0OapqOPDQEcAOwc9sHCJEl6IlKo6vQeAM4klwbLn+siUpj2xVBEZiQrkpeOqEzrnZJkbEUAixC4IeLaY5OcWFcAxxC4CSdNhrmRQvfuDPNOhiLS9+VvG5Lc+PK/oT9+cIeqmnW9h6qa1RqKyLCV9NjcPpNBI5HkGkBJ8tTwhq1WAli1Nb5Nqqo6r/tlrGYcn/gKECy2eXEPdU4AAAAASUVORK5CYII=">
+          <span (click)="clearConversaitons($event)">Clear Conversations</span></div>
+          <p-toast [life]="2500" />
+          <p-confirmDialog />
+        <div (click)="darkModeToggle()">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAABHUlEQVR4nL3UvSuFYRjH8U9IcUjJIAvlpczeFuQvkIgB8Q8wyKCTEilGdlaEwsBAFoP3wU4Z/CV6dA+nx3k6nOd0rum+rvt+vv2ut4cyWRXmcVgKWDfe8IWNtLABfGAUV6hPA2vBJ3rQWYp0TzEezpPIpoF14TbHn8ZyGmAWMzn+CHbSAC/QmuNn8JwGeI/qWOwIg8UCb9AYi0WdfkRNMcB99OaJR9tyXgx0CmsJdxH0CUMJ9w3YxElusC6sW5KSjjDoL9jFElZxjMuwprPxjxaxVSCTWgyHEZtAO8bwisr44wqcYc7frR/vYTHyWiZAt4OaQnX/TGjmL6ULoabr6ENTmNO20KQ7HKD5H9n8qI1+Enu4xkNQvxJqVx77BurmLYEOYotGAAAAAElFTkSuQmCC">
+          <span>Theme Mode</span>
+        </div>
+        <div>
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAABj0lEQVR4nK2Uy0qCYRCGn02BBS7ygHYFCh3oGqqLqCSihWGbImqXpeWii4iCdNUNdKBauUmDgk67LqGli9rExPvFV/3qj/XC4Iwz/8vMfDMD3ZEARiWm94QYUAGegDf9mrwDj8CuYkJhAWgAM8AFMAnkJVPAJTCrmPluZGXgCIgAS8Cm/neEhqJ8EcWWOmXWAjaANHADRAMIo/KlFNsKyjSmoCSwCDSBV6AG7AHHEtOr8t0Ca8Cwvh3yCSvqmcMKUAAy6tu+xPQssKwYhxyw82WpwX2efQiMe7ZfsmECOPDsfnF8wmbrxGcHToF4B8KEYnycu1EaA+reRyYvKtnZVYmzC4rJe1IX1/8TxgPS76XkM397GmrsXx7l2me33Zzz7FWVlQ0Ym0ybsSkHDbYN6Tpwp+GtBgx2Tb6mliAp/dtgo/Vxq5cKsXppb/VytEFJWQ3oABQDCLfkG1S22+3I/Eztkayndqqsb45wGrhSRlZm28x+wvphu/mgo2rH9Vn6vR7gV8/CwubRzv9ImCv9AbPHcipX473xAAAAAElFTkSuQmCC">
+          <span>Language</span>
+        </div>
+        <div>
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAABSElEQVR4nJ2TuUpEQRBFDxOIqG/mL9TIxMB4AsHIRB2MDNwmELNhcJmPEMREYzcQZT5Bn+CL1A8QM0MDE2MpuELz6E0vFHRXVV9q6QtpTADTsnH+iRYwACrgATiXlfIdKicLq8ALsKHq6jDfpnI6KbI94CazNSO+A/qxyoysQT4aIl2pB2wez4HKrOoP4BM4A0Zr8ULtN13nQDOrYxH4AhaAOeAN2PfkbQEHrqMKLKANrDn3Y+Dak1cAT+7lnjTGgHdgNxAvf0c2CVxkEJ5oViOB+KW4sgjngW+phRRhITXEcATcJnJK95dUIg5hBpiNxJvuUpA2TU4hrAM7kfh2/Tu1NPBQlafAVaS6V9/bjmT0V+kNgaVQQl+ksXm6lQ2BXipxWe2bnHzERtRVm8HKfI9Mm7a5R/1TMzubzxaQ04UXJrkpmZ2j+AHIcjtwgZZmlQAAAABJRU5ErkJggg==">
+          <span (click)="openFeedbackDialog()">Feedback</span>
+
+        </div>
+        <div (click)="confirm1($event)">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAsUlEQVR4nNXUMWoCURAG4O8GW6mJnWiXIkW8gIW5hKW6na0ps0mVI4hn8ghabB9vsJKwsJXFey/wwDjwd8MHwzDDvVWBEm+BbPCYip3wk5AzJjGw7Jo/8BLIEhe8x8CqA58SppmjlxMc4DknuEODRS5whDqGVlfgFodA6q6/wewmYPaRQ7XPvZQhprGm6g/gK/qpp/cZOb1V6ukVOCY+h2+MEybRomt8BdK+r4cU7H/WL8xxVfck3lreAAAAAElFTkSuQmCC">
+          <span>Logout</span>
+        </div>
+      </div>
+      <!-- Section of  Options End -->
+    </div>
+    <!-- side nav history Section End -->
+
+    <p-sidebar [(visible)]="sidebarVisible">
+      <div class="side-history-header" >
+        <div><img  pTooltip="Close sidebar" tooltipPosition="bottom"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAC2klEQVR4nJXVa0+SYRgHcFZ9lNZq2szS0g4ySxceYDjGQQM8QgqoKCogIsj5KGdR84QioOYnqEQ5uF7Xslr2vtWH+Lf7KYzkDVzb/8314rfnvq9710Oj0Wg0g8FwjSfsr+EI+x4Wwu4WNZJ0crsvwujiNZC0sjgPCnnawb7f/JxZxeVyrxKLcFe6B16+n5w1YkpvwqTOCKVmHqMzOshVWgwrZyAdm8agQoV+mRLi4TEIJQoIBkbA65WCIxoCUyDGEwYzQywaRzxURZDoRhyvYik4/BGsxpKwe8OIrscRXNmCb2kd7uAqbItLMLtCMNh90Fk8UBsdUM1ZMKY2oZ0rxONnbTdoXS/67qoNFqxtp7C+sw//8iZWthLwhFYQWo0hEN2EN7wGh38ZVm8EJmcAeosXmgUXpvQ2KLUmKKbmKbChpe02BQqlckiV05CMT2FAoUKfbII6mkiiQM+QjDoelxxPLAFL0AsmXwwmT0QhDE4PWth8NLWz/4GLkWWUW7HkHo5zpyX9OYu9CAxXACYImC/p68xFoDccLRvcImA2j7fHGcT3DxHfe42v59+hM9uKwFAF4G4K6WweH88+4yiTw1Emix8/f2HWZEMdvbWaAj2hpYrByzVrsv4BWQJRrSdYPri5m0Q6m4MvsowBhRL9snFk8qfQLhSB7mCkfDCeRDqTK+lrFyxFYKB8cCOepO7uTfoEO6kDbKf28eXbOTTGItAVCFcAJijww6czvDvJUtMmQ9EYzUWgvwJwh4DZkr7aYEbNo+YqCnT6Q2WD6wQ8yYK8jN6RUSQODv8H27k9dxy+ysHSLzT9BfmiW/M2V/ng9i51d5dLrtKgtoF+nVqwLL7wVG91wub1w+rxweJehNnlxYLTA6PDDYPdhXmbE3qrA4OjE5Cr1NRDJk+FDEMxrUU9vfWIWrCkyPru6OJVX17xZL0X0sTorCdpfMa4SD29pY7kXiP9ZuEX8Bvs83dW/5c87AAAAABJRU5ErkJggg=="></div>
+        <div><img pTooltip="New Conversation" tooltipPosition="bottom"    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAACXBIWXMAAAsTAAALEwEAmpwYAAABaElEQVR4nN2UOUsDYRCGn0SIggmaw04JbFYRxANsPCCCliJYWHgUXmAUFCvFQlBECyXRv2Xhj5KRd2H53FOtfGEIO5n32dnZnQ/+gyqABxR1PQJMJIQvT6JWgB7wBkwqd6PrpDBPO6nTHrAOVEP5AaCeEA15zFuOArd0dyvOq7q8xvgmX3/WfgCuyeungZvAfsZo5gF7QAc4S4mOajOD8yozuAqsAmtOzP8WPAc8Ak9OXAElYMjxDsvrpYHjVADuVHcLbAGDyk8BfWngEjAeWltP5oI6PwY2gQfgWvBY+SHwcsTajqnuSF8E2jrrfCYruKjfYG1thoEWtL72HgLZxp3Gdd7KuNI2jh3BZ5WzJu6BZz1F7CHUiDhsyg58F+gC08rZzN+BF6DfhbdDx6YbXcdg49pT/kA123q5G1GPWtG83QN9NKLW4OfAh9bbdAicpIwzk+zbvVTnF8ArsPgXYJPNfElz/1r7T7bzRa7bv0R4AAAAAElFTkSuQmCC"></div>
+      </div>
+      <!-- Start New Converstion Or Close side Nav Section -->
+
+      <!-- Section of  Chat history start -->
+      <div class="chat-history">
+            <div class="chat-container" *ngFor="let chat of chatHistory">
+              <span class="chat">
+                {{chat}}
+              </span>
+              <span [matMenuTriggerFor]="menu" pTooltip="Options" tooltipPosition="bottom" class="chat-options">&#8230;</span>
+              <mat-menu #menu="matMenu">
+                <button   mat-menu-item>Share</button>
+                <button mat-menu-item>Rename</button>
+                <button mat-menu-item>Delete</button>
+              </mat-menu>
+            </div>
+      </div>
+      <!-- Section of  Chat history End -->
+
+      <mat-divider style="margin: 0 10px;" ></mat-divider>
+
+      <!-- Section of  Options start -->
+      <div class="options">
+        <div >
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA2klEQVR4nO1UOwrCQBBNk8obWOgBxMC8N+mEBOIxrCw8jIV4A0/gGWz0GGLrIUKUgRX8bJKNgo0OPBiY997MDrsbRd8OkmOSW0OapqOPDQEcAOwc9sHCJEl6IlKo6vQeAM4klwbLn+siUpj2xVBEZiQrkpeOqEzrnZJkbEUAixC4IeLaY5OcWFcAxxC4CSdNhrmRQvfuDPNOhiLS9+VvG5Lc+PK/oT9+cIeqmnW9h6qa1RqKyLCV9NjcPpNBI5HkGkBJ8tTwhq1WAli1Nb5Nqqo6r/tlrGYcn/gKECy2eXEPdU4AAAAASUVORK5CYII=">
+          <span (click)="clearHistory()">Clear Conversations</span></div>
+        <div>
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAABHUlEQVR4nL3UvSuFYRjH8U9IcUjJIAvlpczeFuQvkIgB8Q8wyKCTEilGdlaEwsBAFoP3wU4Z/CV6dA+nx3k6nOd0rum+rvt+vv2ut4cyWRXmcVgKWDfe8IWNtLABfGAUV6hPA2vBJ3rQWYp0TzEezpPIpoF14TbHn8ZyGmAWMzn+CHbSAC/QmuNn8JwGeI/qWOwIg8UCb9AYi0WdfkRNMcB99OaJR9tyXgx0CmsJdxH0CUMJ9w3YxElusC6sW5KSjjDoL9jFElZxjMuwprPxjxaxVSCTWgyHEZtAO8bwisr44wqcYc7frR/vYTHyWiZAt4OaQnX/TGjmL6ULoabr6ENTmNO20KQ7HKD5H9n8qI1+Enu4xkNQvxJqVx77BurmLYEOYotGAAAAAElFTkSuQmCC">
+          <span>Theme Mode</span>
+        </div>
+        <div>
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAABj0lEQVR4nK2Uy0qCYRCGn02BBS7ygHYFCh3oGqqLqCSihWGbImqXpeWii4iCdNUNdKBauUmDgk67LqGli9rExPvFV/3qj/XC4Iwz/8vMfDMD3ZEARiWm94QYUAGegDf9mrwDj8CuYkJhAWgAM8AFMAnkJVPAJTCrmPluZGXgCIgAS8Cm/neEhqJ8EcWWOmXWAjaANHADRAMIo/KlFNsKyjSmoCSwCDSBV6AG7AHHEtOr8t0Ca8Cwvh3yCSvqmcMKUAAy6tu+xPQssKwYhxyw82WpwX2efQiMe7ZfsmECOPDsfnF8wmbrxGcHToF4B8KEYnycu1EaA+reRyYvKtnZVYmzC4rJe1IX1/8TxgPS76XkM397GmrsXx7l2me33Zzz7FWVlQ0Ym0ybsSkHDbYN6Tpwp+GtBgx2Tb6mliAp/dtgo/Vxq5cKsXppb/VytEFJWQ3oABQDCLfkG1S22+3I/Eztkayndqqsb45wGrhSRlZm28x+wvphu/mgo2rH9Vn6vR7gV8/CwubRzv9ImCv9AbPHcipX473xAAAAAElFTkSuQmCC">
+          <span>Language</span>
+        </div>
+        <div>
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAABSElEQVR4nJ2TuUpEQRBFDxOIqG/mL9TIxMB4AsHIRB2MDNwmELNhcJmPEMREYzcQZT5Bn+CL1A8QM0MDE2MpuELz6E0vFHRXVV9q6QtpTADTsnH+iRYwACrgATiXlfIdKicLq8ALsKHq6jDfpnI6KbI94CazNSO+A/qxyoysQT4aIl2pB2wez4HKrOoP4BM4A0Zr8ULtN13nQDOrYxH4AhaAOeAN2PfkbQEHrqMKLKANrDn3Y+Dak1cAT+7lnjTGgHdgNxAvf0c2CVxkEJ5oViOB+KW4sgjngW+phRRhITXEcATcJnJK95dUIg5hBpiNxJvuUpA2TU4hrAM7kfh2/Tu1NPBQlafAVaS6V9/bjmT0V+kNgaVQQl+ksXm6lQ2BXipxWe2bnHzERtRVm8HKfI9Mm7a5R/1TMzubzxaQ04UXJrkpmZ2j+AHIcjtwgZZmlQAAAABJRU5ErkJggg==">
+          <span>Feedback</span>
+        </div>
+        <div>
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAsUlEQVR4nNXUMWoCURAG4O8GW6mJnWiXIkW8gIW5hKW6na0ps0mVI4hn8ghabB9vsJKwsJXFey/wwDjwd8MHwzDDvVWBEm+BbPCYip3wk5AzJjGw7Jo/8BLIEhe8x8CqA58SppmjlxMc4DknuEODRS5whDqGVlfgFodA6q6/wewmYPaRQ7XPvZQhprGm6g/gK/qpp/cZOb1V6ukVOCY+h2+MEybRomt8BdK+r4cU7H/WL8xxVfck3lreAAAAAElFTkSuQmCC">
+          <span>Logout</span>
+        </div>
+      </div>
+
+    </p-sidebar>
+
+  </div>
+

@@ -1,0 +1,23 @@
+<div class="share-container">
+  <div class="share-header">
+    <div>
+      <h2 mat-dialog-title>Share public link to chat</h2>
+    </div>
+    <div class="image-container">
+      <img [mat-dialog-close]="true" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAc0lEQVR4nNXUOw6AIBCE4T8ZOu5/Ay2MHoN7aQOJDfJwCt169iOEZeFvFYEwkA+5p4olYOtEQ86mGipgAU5gb6DdWXUERw5uNgxjT43TWKk7cADrG+yOFqjA05gdlPPKcj6KnGMj52DL/fWiezngXl/frAvLnjtzMXo9sQAAAABJRU5ErkJggg==">
+  </div>
+</div>
+<mat-divider></mat-divider>
+
+<div class="share-container-content">
+  <mat-dialog-content>
+    <div class="text">
+      <h3>A public link to your chat has been created.Shared Conversation will include all messages. </h3>
+    </div>
+
+    <div class="input-link">
+      <input type="text" id="linkInput" value="http://localhost:4200/share/chat/{{this.chatuuid}}" readonly>
+      <button id="copyButton" (click)="copyLink()">Copy</button>
+    </div>
+  </mat-dialog-content>
+</div>

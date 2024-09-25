@@ -1,0 +1,65 @@
+# Upgrade the necessary packages
+!pip install -U bitsandbytes accelerate
+
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
+import torch
+
+# Model ID from Hugging Face Hub
+model_id = "ContactDoctor/Bio-Medical-Llama-3-8B"
+
+# Load the model with 4-bit quantization
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.bfloat16,
+)
+
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    quantization_config=bnb_config,
+    torch_dtype=torch.bfloat16,
+    device_map="auto",
+)
+
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+pipe = pipeline(
+    "text-generation",
+    model=model,
+    tokenizer=tokenizer,
+    max_length=50,  # Reduce max tokens to improve performance
+)
+
+# Define your messages
+messages = [
+    {"role": "system", "content": "You are an expert trained on healthcare and biomedical domain!"},
+    {"role": "user", "content": "I'm a 35-year-old male and for the past few months, I've been experiencing fatigue, increased sensitivity to cold, and dry, itchy skin. What is the diagnosis here?"},
+]
+
+# Prepare the prompt using the chat template
+prompt = pipe.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+
+# Generate text
+outputs = pipe(prompt, max_new_tokens=50, do_sample=True, temperature=0.6, top_p=0.9)
+
+# Print the generated output
+print(outputs[0]["generated_text"][len(prompt):])
+
+
+
+
+
+
+def build_prompt(question):
+    return f"[INST]@Enlighten. {question} [/INST]"
+
+def ask_question(question):
+    prompt = build_prompt(question)
+    outputs = pipe(prompt, max_new_tokens=1000, do_sample=True, temperature=0.6, top_p=0.9)
+    generated_text = outputs[0]["generated_text"].replace(prompt, "").strip()
+    print(f"Q: {question}")
+    print(f"A: {generated_text}\n")
+
+# Example question to test
+question = "can you give me 3 benefits of creatine on health"
+ask_question(question)
