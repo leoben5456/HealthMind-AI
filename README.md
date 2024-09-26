@@ -13,7 +13,7 @@ HealthMind-AI is an AI-powered medical Q&A web application that leverages the **
   - Rename conversations for easy identification.
   - Delete conversations to clear unwanted interactions.
   - Share conversations with others.
-  - Dark mode option to enhance user experience based on their preference.
+  
 
 ## Technologies Used:
 - **Frontend:** Angular

@@ -7,7 +7,7 @@ import { ChatHistoryItem, ChatMessage } from '../main/main.component';
   providedIn: 'root'
 })
 export class ChatService {
-  private apiUrl = 'https://cfa3-35-240-192-41.ngrok-free.app/ask';
+  private apiUrl = 'https://aef9-34-91-164-216.ngrok-free.app/ask';
   uiid: BehaviorSubject<string> = new BehaviorSubject<string>('');
   private chatMessagesSubject: BehaviorSubject<ChatMessage[]> = new BehaviorSubject<ChatMessage[]>([]);
   private chatMessages: ChatMessage[] = [];

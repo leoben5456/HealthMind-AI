@@ -80,11 +80,7 @@ ngOnInit() {
     this.hideSidebar = url.includes('/share/chat/');
   });
 
-  /*this.isWaitingForResponse = true;
-    setTimeout(() => {
-      this.isWaitingForResponse = false;
-    }, 10000);
-    */
+   this.isDarkMode=localStorage.getItem('darkmode') === 'true';
 }
 
 
@@ -254,7 +250,8 @@ getMessages(uuid: string) {
 darkModeToggle() {
   this.darkModeService.setDarkmode(!this.darkModeService.getDarkmode());
   localStorage.setItem('darkmode', this.darkModeService.getDarkmode().toString());
-  console.log(this.darkModeService.getDarkmode());
+  this.isDarkMode = this.darkModeService.getDarkmode();
+  console.log(this.isDarkMode);
 }
 
 

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" >
 
     <div class="header">
       <mat-icon [ngStyle]="{'display': isHandset ? 'block' : 'none'}"  (click)="sidebarVisible = true">menu</mat-icon>
@@ -63,7 +63,6 @@
 
 
 
-
     <!-- side nav history Section -->
     <div *ngIf="!hideSidebar"  class="side-history" [ngClass]="{'side-history-open': sidebar, 'side-history-close': !sidebar}" [ngStyle]="{'display': isHandset ? 'none' : 'block'}">
       <!-- Start New Converstion Or Close side Nav Section -->
@@ -115,10 +114,7 @@
           <span (click)="clearConversaitons($event)">Clear Conversations</span></div>
           <p-toast [life]="2500" />
           <p-confirmDialog />
-        <div (click)="darkModeToggle()">
-          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAABHUlEQVR4nL3UvSuFYRjH8U9IcUjJIAvlpczeFuQvkIgB8Q8wyKCTEilGdlaEwsBAFoP3wU4Z/CV6dA+nx3k6nOd0rum+rvt+vv2ut4cyWRXmcVgKWDfe8IWNtLABfGAUV6hPA2vBJ3rQWYp0TzEezpPIpoF14TbHn8ZyGmAWMzn+CHbSAC/QmuNn8JwGeI/qWOwIg8UCb9AYi0WdfkRNMcB99OaJR9tyXgx0CmsJdxH0CUMJ9w3YxElusC6sW5KSjjDoL9jFElZxjMuwprPxjxaxVSCTWgyHEZtAO8bwisr44wqcYc7frR/vYTHyWiZAt4OaQnX/TGjmL6ULoabr6ENTmNO20KQ7HKD5H9n8qI1+Enu4xkNQvxJqVx77BurmLYEOYotGAAAAAElFTkSuQmCC">
-          <span>Theme Mode</span>
-        </div>
+        
         <div>
           <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAABj0lEQVR4nK2Uy0qCYRCGn02BBS7ygHYFCh3oGqqLqCSihWGbImqXpeWii4iCdNUNdKBauUmDgk67LqGli9rExPvFV/3qj/XC4Iwz/8vMfDMD3ZEARiWm94QYUAGegDf9mrwDj8CuYkJhAWgAM8AFMAnkJVPAJTCrmPluZGXgCIgAS8Cm/neEhqJ8EcWWOmXWAjaANHADRAMIo/KlFNsKyjSmoCSwCDSBV6AG7AHHEtOr8t0Ca8Cwvh3yCSvqmcMKUAAy6tu+xPQssKwYhxyw82WpwX2efQiMe7ZfsmECOPDsfnF8wmbrxGcHToF4B8KEYnycu1EaA+reRyYvKtnZVYmzC4rJe1IX1/8TxgPS76XkM397GmrsXx7l2me33Zzz7FWVlQ0Ym0ybsSkHDbYN6Tpwp+GtBgx2Tb6mliAp/dtgo/Vxq5cKsXppb/VytEFJWQ3oABQDCLfkG1S22+3I/Eztkayndqqsb45wGrhSRlZm28x+wvphu/mgo2rH9Vn6vR7gV8/CwubRzv9ImCv9AbPHcipX473xAAAAAElFTkSuQmCC">
           <span>Language</span>
