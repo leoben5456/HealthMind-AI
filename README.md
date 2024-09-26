@@ -1,5 +1,5 @@
 # HealthMind-AI
-[![Watch the Demo Video](https://img.youtube.com/vi/liKQrAlh_j8/hqdefault.jpg)](https://youtu.be/liKQrAlh_j8)
+[Watch Demo Video](https://youtu.be/liKQrAlh_j8)
 
 **Description:**  
 HealthMind-AI is an AI-powered medical Q&A web application that leverages the **Bio-Medical-Llama-3-8B** model to provide accurate answers to medical-related questions. The frontend is built using **Angular**, and the backend is developed with **Spring Boot**, ensuring a seamless interaction between the user and the AI engine.
