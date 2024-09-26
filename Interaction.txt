@@ -45,7 +45,7 @@ def ask():
         return jsonify({"error": "No question provided"}), 400
 
 if __name__ == '__main__':
-    ngrok.set_auth_token("2kYTMJFknmjidia3sHOHumzFgL8_2QXTLqwt3bKRoZ6VvxCVq")
+    ngrok.set_auth_token("YOUR_TOKEN")
 
     public_url = ngrok.connect(8000)
     print(f"Your app is available at: {public_url}")
